@@ -26,7 +26,7 @@ You can install the development version of CytoSpill from [GitHub](https://githu
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("qmiao19/CytoSpill")
+devtools::install_github("KChen-lab/CytoSpill")
 ```
 ## Example
 
@@ -35,11 +35,11 @@ This is a example which shows you how to compensate a CyTOF dataset, we used a s
 ```{r}
 library(CytoSpill)
 getwd()
-load(file="./data/Levine32.RData")
+load(file="./data/Levine32_example.RData")
 str(data_Levine32)
 ```
 
-We sampled 5,000 cells from the healthy human bone marrow data used in Levine, 2015. 
+We sampled 10,000 cells from the healthy human bone marrow data used in Levine, 2015. 
 We can check the colunmns of this CyTOF dataset:
 
 ```{r cols}
@@ -52,15 +52,11 @@ And the corresponding markers:
 markers
 ```
 
-After checking the markers we decided to compensate for columns 5 to 36.
-We can use the function GetSpillMat to obtain the compensation matrix. We need to specify the data we are using, which column are used to calculate the spillover effects and using how many cells for calculation.
+After checking the markers we decided to use columns 5 to 36 for compensation.
+We can use the function SpillComp to estimate the spillover matrix and perform compensation. We need to specify the data we are using, which column are used to calculate the spillover effects and using how many cells for calculation.
 
-```{r spillmat, eval=FALSE}
-GetSpillMat(data = data_Levine32, cols = c(5:36), n = 5000)
+```{r}
+results <- SpillComp(data = data_Levine32, cols = 5:36, n = 10000, threshold = 0.1, flexrep = 5, neighbor = 1)
 ```
 
-Or we can directly obtain the compensated data and write it as a fcs format file using SpillComp function. In addition, we need to give the function an output file name.
-
-```{r compensation, eval=FALSE}
-SpillComp(data = data_Levine32, cols = c(5:36), n = 5000, output = 'Levine32_compensation.fcs')
-``` 
+The function returns a list of results, the first element is the compensated data matrix, the second one is the estimated spillover matrix and the third one is the derived cutoffs based on our method.
