@@ -33,6 +33,7 @@ devtools::install_github("KChen-lab/CytoSpill")
 This is a example which shows you how to compensate a CyTOF dataset, we used a sample dataset that included in our package here:
 
 ```{r}
+devtools::load_all()
 library(CytoSpill)
 getwd()
 load(file="./data/Levine32_example.RData")
@@ -55,7 +56,7 @@ markers
 After checking the markers we decided to use columns 5 to 36 for compensation.
 We can use the function SpillComp to estimate the spillover matrix and perform compensation. We need to specify the data we are using, which column are used to calculate the spillover effects and using how many cells for calculation.
 
-```{r}
+```{r eval=FALSE}
 results <- SpillComp(data = data_Levine32, cols = 5:36, n = 10000, threshold = 0.1, flexrep = 5, neighbor = 1)
 ```
 
