@@ -4,6 +4,8 @@ author: "Qi Miao"
 output: html_document
 ---
 
+#Analysis of leukemia patient blood data, from which generated Figure 4
+
 ```{r}
 library(CytoSpill)
 library(flowCore)
