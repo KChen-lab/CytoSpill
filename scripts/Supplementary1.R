@@ -1,4 +1,5 @@
-##Reviewer 2 comment 3
+#generate supplementary 1 results (based on reviewer 2 comment 3)
+#simulation
 r2c3_simulation_data <- function(){
   Nd142Di <- c(rnorm(10000, 200, 50), rep(0, 10000))
   Nd142Di[which(Nd142Di < 0)] <- 0

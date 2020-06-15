@@ -4,6 +4,8 @@ author: "Qi Miao"
 output: html_document
 ---
 
+#Analysis of mouse bone marrow data.
+
 ```{r}
 library(CytoSpill)
 library(flowCore)

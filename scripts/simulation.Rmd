@@ -4,37 +4,22 @@ author: "Qi Miao"
 output: html_document
 ---
 
+###simulation results
+###Figure 2
+
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 ```
 
 ###get the compensated data from CATALYST package as the true expression base for the simulation study
 ```{r}
-library(CATALYST)
-packageVersion("CATALYST")
-
-#code adapted from CATALYST example Helena L Crowell et al. https://bioconductor.org/packages/release/bioc/vignettes/CATALYST/inst/doc/preprocessing.html#computespillmat-estimation-of-the-spillover-matrix
-
-# get single-stained control samples
-data(ss_exp)
-# specify mass channels stained for
-bc_ms <- c(139, 141:156, 158:176)
-# debarcode
-re <- assignPrelim(x=ss_exp, y=bc_ms, verbose=FALSE)
-re <- estCutoffs(x=re)
-re <- applyCutoffs(x=re)
-# compute spillover matrix
-spillMat <- computeSpillmat(x=re)
-
-data(mp_cells)
-comped_nnls <- compCytof(x=mp_cells, y=spillMat, method="nnls")
-
-comped_nnls_exprs <- flowCore::exprs(comped_nnls)
-
-#remove unaffected channel
-comped_nnls_exprs <- comped_nnls_exprs[,c(2, 4:19, 21:39)]
 colnames(comped_nnls_exprs)
 #the compensated data flowframe: comped_nnls, exprs: comped_nnls_exprs
+
+cols_metal <- c("Pr141Di", "Nd142Di", "Nd143Di", "Nd144Di", "Nd145Di", "Nd146Di", "Sm147Di",
+"Nd148Di", "Sm149Di", "Nd150Di", "Eu151Di", "Sm152Di", "Eu153Di", "Sm154Di", "Gd155Di",
+"Gd156Di", "Gd158Di", "Tb159Di", "Gd160Di", "Dy161Di")
+
 ```
 
 ###simulate the spillover matrix
@@ -102,6 +87,34 @@ data_simulation <- function(signal, sm, ...){
   }
   return(data)
 }
+
+simulate_ture_signal <- function(){
+  set.seed(1)
+  # single modal channel
+  single <- sort(sample(c(1:20), 10))
+  double <- c(1:20)[-single]
+  mean_single <- runif(10, min = 100, max = 600)
+  mean_double1 <- runif(10, min = 100, max = 600)
+  mean_double2 <- runif(10, min = 100, max = 600)
+  
+  data <- matrix(nrow = 100000, ncol = 20)
+  
+  j = 1
+  for (i in single){
+    data[,i] <- sample(c(rnorm(60000, mean = mean_single[j], sd = mean_single[j]/5), rep(0, 40000)), 100000)
+    j = j + 1
+  }
+  
+  j = 1
+  for (i in double){
+    data[,i] <- sample(c(rnorm(30000, mean = mean_double1[j], sd = mean_double1[j]/5), rnorm(30000, mean = mean_double2[j], sd = mean_double2[j]/5), rep(0, 40000)), 100000)
+    j = j + 1
+  }
+  
+  colnames(data) <- cols_metal
+  return(data)
+}
+
 ```
 ###NMF helper functions
 ```{r}
@@ -208,18 +221,23 @@ train_NMF <- function(data, spill_cols, cutoffs){
 ###data simulation
 ```{r}
 set.seed(1)
-sm_simulated <- sm_simulation(data = comped_nnls_exprs, n = 100)
-data_simulated <- data_simulation(signal = comped_nnls_exprs, sm = sm_simulated)
+
+true_signal <- simulate_ture_signal()
+sm_simulated <- sm_simulation(data = true_signal, n = 20)
+data_simulated <- data_simulation(signal = true_signal, sm = sm_simulated)
+
 ```
 
 ###get the estimated spillover matrix based on simulated data
 ```{r}
+library(CytoSpill)
+
 estimate_sm <- function(data, spill_cols){
   my_sm = vector("list",length(data))
   my_sm_nmf = vector("list",length(data))
   
   for (i in seq_along(data)){
-    cutoffs_sim <- .DeriveCutoffs(data=data[[i]], cols=c(1:ncol(data[[i]])), n = 5000, flexrep = 3)
+    cutoffs_sim <- .DeriveCutoffs(data=data[[i]], cols=c(1:ncol(data[[i]])), n = 10000, flexrep = 5)
     threshold <- 0.1
     model <- .EstimateSpill(data=data[[i]], cutoffs=cutoffs_sim, cols=c(1:ncol(data[[i]])), upperbound = threshold, neighbor = 1)
     estimates <- model[[1]]
@@ -252,8 +270,9 @@ estimate_sm <- function(data, spill_cols){
 #   }
 #   return(my_sm_nmf)
 # }
+
 set.seed(1)
-estimate_sm_simulated <- estimate_sm(data = data_simulated, spill_cols = spill_cols_data(comped_nnls_exprs))
+estimate_sm_simulated <- estimate_sm(data = data_simulated, spill_cols = spill_cols_data(true_signal))
 
 ##simulated_results.Rdata
 
@@ -261,7 +280,7 @@ estimate_sm_simulated <- estimate_sm(data = data_simulated, spill_cols = spill_c
 
 ```{r}
 #number of simulated elements in each spillover matrix
-spill_cols <- spill_cols_data(comped_nnls_exprs)
+spill_cols <- spill_cols_data(true_signal)
 sum(sapply(spill_cols, length))
 ```
 
@@ -271,7 +290,7 @@ nmf_estimate_sm <- estimate_sm_simulated[[2]]
 for (i in seq_along(nmf_estimate_sm)){
   nmf_estimate_sm[[i]][which(nmf_estimate_sm[[i]]<0)] <- 0
   nmf_estimate_sm[[i]][which(nmf_estimate_sm[[i]]>0.1)] <- 0.1
-  nmf_estimate_sm[[i]] <- nmf_estimate_sm[[i]] + diag(36)
+  nmf_estimate_sm[[i]] <- nmf_estimate_sm[[i]] + diag(20)
 }
 ```
 

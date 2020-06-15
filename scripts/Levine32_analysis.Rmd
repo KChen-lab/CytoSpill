@@ -4,6 +4,8 @@ author: "Qi Miao"
 output: html_document
 ---
 
+#Analysis of healthy human bone marrow data, from which generated Figure 6.
+
 ```{r}
 library(CytoSpill)
 library(flowCore)

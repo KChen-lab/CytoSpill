@@ -4,11 +4,13 @@ author: "Qi Miao"
 output: html_document
 ---
 
+###Comparison with single-stained dependent compensation
+###Figure 3
+
 #Code adapted from correlation_analysis.Rmd Vito Zanotelli, et al. https://github.com/BodenmillerGroup/cyTOFcompensation/blob/master/scripts/correlation_analysis.Rmd
 
 ```{r Libraries}
 library(CytoSpill)
-
 library(flowCore)
 library(Rtsne)
 library(Rphenograph)
