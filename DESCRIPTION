@@ -1,0 +1,18 @@
+Package: CytoSpill
+Type: Package
+Title: de novo CyTOF compensation
+Version: 0.1.0
+Author: Qi Miao
+Maintainer: Qi Miao <QMiao1@mdanderson.org>
+Description: 
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+biocViews:
+Imports:
+    flowCore,
+    CATALYST,
+    nloptr,
+    nnls,
+    flexmix
+RoxygenNote: 6.1.1

@@ -1,0 +1,66 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# CytoSpill
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of CytoSpill is to compensate the spillover effects in CyTOF data which caused by technical effects without relying on control experiment.
+
+## Installation
+
+You can install the development version of CytoSpill from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("qmiao19/CytoSpill")
+```
+## Example
+
+This is a example which shows you how to compensate a CyTOF dataset, we used a sample dataset that included in our package here:
+
+```{r}
+library(CytoSpill)
+getwd()
+load(file="./data/Levine32.RData")
+str(data_Levine32)
+```
+
+We sampled 5,000 cells from the healthy human bone marrow data used in Levine, 2015. 
+We can check the colunmns of this CyTOF dataset:
+
+```{r cols}
+colnames(data_Levine32)
+```
+
+And the corresponding markers:
+
+```{r markers}
+markers
+```
+
+After checking the markers we decided to compensate for columns 5 to 36.
+We can use the function GetSpillMat to obtain the compensation matrix. We need to specify the data we are using, which column are used to calculate the spillover effects and using how many cells for calculation.
+
+```{r spillmat, eval=FALSE}
+GetSpillMat(data = data_Levine32, cols = c(5:36), n = 5000)
+```
+
+Or we can directly obtain the compensated data and write it as a fcs format file using SpillComp function. In addition, we need to give the function an output file name.
+
+```{r compensation, eval=FALSE}
+SpillComp(data = data_Levine32, cols = c(5:36), n = 5000, output = 'Levine32_compensation.fcs')
+``` 
