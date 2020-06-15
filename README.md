@@ -70,4 +70,4 @@ After checking the markers we decided to use columns 5 to 36 for compensation. W
 results <- SpillComp(data = data_Levine32, cols = 5:36, n = 10000, threshold = 0.1, flexrep = 5, neighbor = 1)
 ```
 
-The function returns a list of results, the first element is the compensated data matrix, the second one is the estimated spillover matrix and the third one is the derived cutoffs based on our method.
+The function returns a list of results, the first element is the compensated data matrix in flowFrame format, the second one is the estimated spillover matrix and the third one is the derived cutoffs based on our method.
