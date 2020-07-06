@@ -1,3 +1,5 @@
+library(flowCore)
+
 #' @export
 SpillComp <- function(file = NULL, data = NULL, cols, n, output = NULL, threshold = 0.1, flexrep = 10, neighbor = 1) {
   if (is.null(data)){
