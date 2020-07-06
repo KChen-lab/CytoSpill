@@ -28,7 +28,7 @@ devtools::load_all()
 library(CytoSpill)
 getwd()
 #> [1] "/Users/qmiao/CytoSpill copy 2"
-load(file="./data/Levine32_example.RData")
+load(file="./data/Levine32_example.Rdata")
 str(data_Levine32)
 #>  num [1:10000, 1:37] 459501 88341 129149 59689 267864 ...
 #>  - attr(*, "dimnames")=List of 2
