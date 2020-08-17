@@ -11,5 +11,5 @@ SpillComp <- function(file = NULL, data = NULL, cols, n, output = NULL, threshol
   data[,cols] <- data_compensated
   colnames(data) <- data_colnames
   if (!is.null(output)) {flowCore::write.FCS(flowCore::flowFrame(data), filename = output)}
-  return(list(flowFrame(data), spillmat, cutoffs))
+  return(list(flowCore::flowFrame(data), spillmat, cutoffs))
 }
