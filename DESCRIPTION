@@ -10,9 +10,7 @@ Encoding: UTF-8
 LazyData: true
 biocViews:
 Imports:
-    flowCore,
-    CATALYST,
     nloptr,
     nnls,
     flexmix
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
